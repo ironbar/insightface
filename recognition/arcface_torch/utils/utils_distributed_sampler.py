@@ -123,4 +123,10 @@ class DistributedSampler(_DistributedSampler):
         indices = indices[self.rank : self.total_size : self.num_replicas]
         assert len(indices) == self.num_samples
 
+        if hasattr(self.dataset, 'sampling_probabilities'):
+            sampling_probabilities = self.dataset.sampling_probabilities[indices].copy()
+            sampling_probabilities /= np.sum(sampling_probabilities)
+            np.random.seed(self.epoch + self.seed)
+            indices = np.random.choice(indices, len(indices), replace=True, p=sampling_probabilities)
+
         return iter(indices)

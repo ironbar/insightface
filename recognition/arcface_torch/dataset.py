@@ -23,6 +23,7 @@ def get_dataloader(
     dali = False,
     seed = 2048,
     num_workers = 2,
+    sampling_probabilities_path=None,
     ) -> Iterable:
 
     rec = os.path.join(root_dir, 'train.rec')
@@ -52,6 +53,9 @@ def get_dataloader(
         return dali_data_iter(
             batch_size=batch_size, rec_file=rec, idx_file=idx,
             num_threads=2, local_rank=local_rank)
+
+    if sampling_probabilities_path is not None:
+        train_set.sampling_probabilities = np.loadtxt(sampling_probabilities_path)
 
     rank, world_size = get_dist_info()
     train_sampler = DistributedSampler(

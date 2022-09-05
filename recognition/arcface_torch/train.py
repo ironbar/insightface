@@ -60,7 +60,8 @@ def main(args):
         cfg.batch_size,
         cfg.dali,
         cfg.seed,
-        cfg.num_workers
+        cfg.num_workers,
+        cfg.sampling_probabilities_path if hasattr(cfg, 'sampling_probabilities_path') else None,
     )
 
     backbone = get_model(
